@@ -158,10 +158,10 @@ export default {
           hitStack = []
           setTimeout(() => hit(oppBoard, this.delay))
         } else if (hitResult == 'Not sunk but hit!') {
-          // Add all 4 directions to the hit stack unless it is in a corner
+          let nextHit = {}
+          if (randomPos.x  == 9)
+            nextHit.x = 
           setTimeout(() => hit(oppBoard), this.delay)
-        } else {
-          console.log('missed')
         }
       }
 
