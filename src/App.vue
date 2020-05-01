@@ -143,25 +143,48 @@ export default {
 
     computer(board) {
       let hitStack = []
+      let direction = ''
+
       let hit = (oppBoard) => {
-        let randomPos = {
-          x: Math.floor(Math.random() * 10),
-          y: Math.floor(Math.random() * 10),
+        let currentPos = {}
+        if (hitStack == undefined || hitStack.length == 0) {
+          currentPos = { x: Math.floor(Math.random() * 10), y: Math.floor(Math.random() * 10) }
+        } else {
+          console.log(hitStack)
+          currentPos = hitStack.shift()
+          direction = currentPos.direction
         }
 
-        let hitResult = (hitStack == undefined || hitStack.length == 0) ? oppBoard.receiveAttack(randomPos) : oppBoard.receiveAttack(hitStack[0])
+        let hitResult = oppBoard.receiveAttack(currentPos)
 
         if (hitResult == "can't select that spot") {
-          console.log(hitResult + 'hitting again')
           hit(oppBoard)
         } else if (hitResult == 'Ship Sunk!') {
           hitStack = []
+          direction = ''
           setTimeout(() => hit(oppBoard, this.delay))
         } else if (hitResult == 'Not sunk but hit!') {
-          let nextHit = {}
-          if (randomPos.x  == 9)
-            nextHit.x = 
-          setTimeout(() => hit(oppBoard), this.delay)
+          if (direction == '') {
+            if (currentPos.x != 9)
+              hitStack.push({ x: currentPos.x + 1, y: currentPos.y, direction: 'right' })
+            if (currentPos.x != 0)
+              hitStack.push({ x: currentPos.x - 1, y: currentPos.y, direction: 'left' })
+            if (currentPos.y != 9)
+              hitStack.push({ x: currentPos.x, y: currentPos.y + 1, direction: 'up' })
+            if (currentPos.y != 0)
+              hitStack.push({ x: currentPos.x, y: currentPos.y - 1, direction: 'down' })
+          } else if (direction == 'right')
+              hitStack = [{ x: currentPos.x + 1, y: currentPos.y, direction: direction }]
+            else if (direction == 'left')
+              hitStack = [{ x: currentPos.x - 1, y: currentPos.y, direction: direction }]
+            else if (direction == 'up')
+              hitStack = [{ x: currentPos.x, y: currentPos.y + 1, direction: direction }]
+            else if (direction == 'down')
+              hitStack = [{ x: currentPos.x, y: currentPos.y - 1, direction: direction }]
+          console.log('Hitting in ' + direction)
+          setTimeout(() => hit(oppBoard), 3000)
+        } else if (hitResult == 'miss') {
+          direction = ''
         }
       }
 
